@@ -5,7 +5,6 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
   height: 100vh;
   margin: 0;
   font-family: 'Montserrat', sans-serif;
@@ -27,7 +26,6 @@ body {
   box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
 }
 
-/* FORMS & INPUTS */
 form {
   background-color: #ffffff;
   display: flex;
@@ -60,10 +58,8 @@ button {
   text-transform: uppercase;
   transition: transform 80ms ease-in;
   cursor: pointer;
-  margin-top: 10px;
 }
 
-button:active { transform: scale(0.95); }
 button.ghost { background-color: transparent; border-color: #FFFFFF; }
 
 /* SLIDING ANIMATION LOGIC */
@@ -121,24 +117,12 @@ button.ghost { background-color: transparent; border-color: #FFFFFF; }
   width: 50%;
   transition: transform 0.6s ease-in-out;
 }
+
 .overlay-left { transform: translateX(-20%); }
 .container.right-panel-active .overlay-left { transform: translateX(0); }
 .overlay-right { right: 0; }
 .container.right-panel-active .overlay-right { transform: translateX(20%); }
 
-/* CARDS FOR OTHER VIEWS */
-.card { background: white; padding: 50px; border-radius: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); text-align: center; width: 400px; max-width: 90%; }
-
+.card { background: white; padding: 50px; border-radius: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); text-align: center; width: 400px; }
 .social-container { margin: 20px 0; }
-.social-container a {
-  border: 1px solid #DDDDDD;
-  border-radius: 50%;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0 5px;
-  height: 40px;
-  width: 40px;
-  color: #333;
-  text-decoration: none;
-}
+.social-container a { border: 1px solid #ddd; border-radius: 50%; display: inline-flex; justify-content: center; align-items: center; margin: 0 5px; height: 40px; width: 40px; color: #333; text-decoration: none; }
