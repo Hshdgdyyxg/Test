@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Auth App - Integrated Reset</title>
+  <title>Auth App - GitHub Version</title>
   
   <link href="https://fonts.googleapis.com/css?family=Montserrat:400,800" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
@@ -47,12 +47,12 @@
         <div class="overlay">
           <div class="overlay-panel overlay-left">
             <h1>Welcome Back!</h1>
-            <p>To keep connected with us please login with your personal info</p>
+            <p>Login to stay connected</p>
             <button class="ghost" id="signInToggle">Sign In</button>
           </div>
           <div class="overlay-panel overlay-right">
             <h1>Hello, Friend!</h1>
-            <p>Enter your personal details and start journey with us</p>
+            <p>Enter your details and start your journey</p>
             <button class="ghost" id="signUpToggle">Sign Up</button>
           </div>
         </div>
@@ -63,7 +63,7 @@
   <div id="reset-view" class="view-section">
     <div class="card">
       <h1>Reset Password</h1>
-      <p>Enter your email to receive a password reset link.</p>
+      <p>Enter your email to receive a reset link.</p>
       <form id="resetForm" style="padding: 0;">
         <input type="email" id="resetEmail" placeholder="Email Address" required />
         <button type="submit">Send Reset Link</button>
@@ -83,75 +83,7 @@
 
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
-
-  <script>
-    // FIREBASE CONFIG
-    const firebaseConfig = {
-      apiKey: "AIzaSyD0efUT_IFoPQ3svHnu89j7kyWE6OYnWtE",
-      authDomain: "the-tech-world-e2b7c.firebaseapp.com",
-      projectId: "the-tech-world-e2b7c",
-      storageBucket: "the-tech-world-e2b7c.firebasestorage.app",
-      messagingSenderId: "435175920778",
-      appId: "1:435175920778:web:09c9e899d71afce34c0973"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-
-    // NAVIGATION & ANIMATION LOGIC
-    const container = document.getElementById('main-container');
-    const signUpBtn = document.getElementById('signUpToggle');
-    const signInBtn = document.getElementById('signInToggle');
-
-    signUpBtn.addEventListener('click', () => container.classList.add("right-panel-active"));
-    signInBtn.addEventListener('click', () => container.classList.remove("right-panel-active"));
-
-    function switchView(viewId) {
-      document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
-      document.getElementById(viewId).classList.add('active');
-    }
-
-    // AUTH STATE OBSERVER
-    auth.onAuthStateChanged(user => {
-      if (user) {
-        document.getElementById('user-info').innerText = "Logged in as: " + user.email;
-        switchView('dashboard-view');
-      } else {
-        if (!document.getElementById('reset-view').classList.contains('active')) {
-            switchView('auth-view');
-        }
-      }
-    });
-
-    // AUTH ACTIONS
-    document.getElementById('signInForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      auth.signInWithEmailAndPassword(document.getElementById('inEmail').value, document.getElementById('inPassword').value)
-        .catch(err => alert("Login Error: " + err.message));
-    });
-
-    document.getElementById('signUpForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      auth.createUserWithEmailAndPassword(document.getElementById('upEmail').value, document.getElementById('upPassword').value)
-        .catch(err => alert("Sign Up Error: " + err.message));
-    });
-
-    document.getElementById('resetForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const email = document.getElementById('resetEmail').value;
-      auth.sendPasswordResetEmail(email)
-        .then(() => {
-          alert("Success! Check your email for the link.");
-          switchView('auth-view');
-        })
-        .catch(err => alert("Error: " + err.message));
-    });
-
-    function loginWithGoogle() {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithPopup(provider).catch(err => alert("Google Error: " + err.message));
-    }
-
-    function logout() { auth.signOut(); }
-  </script>
+  
+  <script src="script.js"></script>
 </body>
 </html>
