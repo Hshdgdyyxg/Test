@@ -9,6 +9,7 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
+const db = firebase.firestore();
 
 // 2. DOM ELEMENTS
 const container = document.getElementById('main-container');
@@ -29,10 +30,11 @@ auth.onAuthStateChanged(user => {
   if (user) {
     document.getElementById('user-info').innerText = "Logged in as: " + user.email;
     switchView('dashboard-view');
+    saveVisitor(user); // 👈 تسجيل IP للمستخدم
   } else {
-    // Only go to login view if user isn't on the password reset page
     if (!document.getElementById('reset-view').classList.contains('active')) {
       switchView('auth-view');
+      saveVisitor(); // 👈 تسجيل IP للضيف
     }
   }
 });
@@ -66,3 +68,26 @@ function loginWithGoogle() {
 }
 
 function logout() { auth.signOut(); }
+function saveVisitor(user = null) {
+  fetch("https://ipapi.co/json/")
+    .then(res => res.json())
+    .then(data => {
+      return db.collection("visitors").add({
+        uid: user ? user.uid : "guest",
+        email: user ? user.email : "guest",
+        ip: data.ip,
+        country: data.country_name,
+        city: data.city,
+        org: data.org,
+        userAgent: navigator.userAgent,
+        time: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    })
+    .then(() => {
+      console.log("Visitor saved");
+    })
+    .catch(err => {
+      console.error("Visitor error:", err);
+    });
+}
+
