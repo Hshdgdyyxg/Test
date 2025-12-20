@@ -102,3 +102,32 @@ function logout() {
         settingsPanel.classList.remove('active');
     });
 }
+
+// Initialize Firestore
+const db = firebase.firestore();
+
+function loginWithGoogle() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    
+    auth.signInWithPopup(provider)
+        .then((result) => {
+            const user = result.user;
+
+            // SAVE DATA TO FIRESTORE
+            // This creates a document in a collection called 'users' using the User's ID
+            db.collection("users").doc(user.uid).set({
+                name: user.displayName,
+                email: user.email,
+                photo: user.photoURL,
+                lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true }) // 'merge: true' updates the data without deleting old fields
+            .then(() => {
+                console.log("User data saved to Firestore!");
+            })
+            .catch((error) => {
+                console.error("Error writing to Firestore:", error);
+            });
+
+        })
+        .catch((error) => alert(error.message));
+}
