@@ -1,194 +1,47 @@
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
+body, html { margin: 0; padding: 0; width: 100%; height: 100%; font-family: 'Montserrat', sans-serif; background: #f6f5f7; overflow: hidden; }
 
-body {
-  background: #f6f5f7;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  width: 100vw;
-  margin: 0;
-  padding: 0;
-  font-family: 'Montserrat', sans-serif;
-  overflow: hidden; /* Prevents scrollbars on the main body */
-}
+/* VIEW LOGIC */
+.view-section { display: none; width: 100vw; height: 100vh; align-items: center; justify-content: center; position: relative; }
+.view-section.active { display: flex; }
 
-/* VIEW MANAGEMENT */
-.view-section {
-  display: none;
-  width: 100vw;
-  height: 100vh;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-}
+/* AUTH CONTAINER (FULL SCREEN) */
+.container { position: relative; width: 100vw; height: 100vh; background: #fff; overflow: hidden; }
+form { background: #fff; display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 0 10%; height: 100%; text-align: center; }
+input { background: #eee; border: none; padding: 12px 15px; margin: 8px 0; width: 100%; max-width: 400px; border-radius: 5px; }
+button { border-radius: 20px; border: 1px solid #000; background: #000; color: #fff; font-size: 12px; font-weight: bold; padding: 12px 45px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: transform 80ms ease-in; margin-top: 10px; }
+button.ghost { background: transparent; border-color: #fff; }
 
-.view-section.active {
-  display: flex;
-}
-
-/* THE FULL-SCREEN CONTAINER */
-.container {
-  background-color: #fff;
-  position: relative;
-  overflow: hidden;
-  width: 100vw;  /* Full Viewport Width */
-  height: 100vh; /* Full Viewport Height */
-  max-width: 100%;
-  box-shadow: none; /* Removed for a seamless full-screen look */
-  border-radius: 0; /* Removed rounded corners */
-}
-
-/* FORMS & INPUTS */
-form {
-  background-color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  padding: 0 10%; /* Percentage padding for better scaling */
-  height: 100%;
-  text-align: center;
-}
-
-input {
-  background-color: #eee;
-  border: none;
-  padding: 15px; /* Slightly larger for full-screen feel */
-  margin: 10px 0;
-  width: 100%;
-  max-width: 400px; /* Keeps inputs from getting too wide on huge monitors */
-  border-radius: 5px;
-}
-
-button {
-  border-radius: 20px;
-  border: 1px solid #000;
-  background-color: #000;
-  color: #fff;
-  font-size: 14px;
-  font-weight: bold;
-  padding: 15px 60px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  transition: transform 80ms ease-in;
-  cursor: pointer;
-  margin-top: 20px;
-}
-
-button:active { transform: scale(0.95); }
-button.ghost { background-color: transparent; border-color: #FFFFFF; }
-
-/* SLIDING ANIMATION LOGIC */
-.form-container {
-  position: absolute;
-  top: 0;
-  height: 100%;
-  transition: all 0.6s ease-in-out;
-}
-
+/* SLIDING ANIMATION */
+.form-container { position: absolute; top: 0; height: 100%; transition: all 0.6s ease-in-out; }
 .sign-in-container { left: 0; width: 50%; z-index: 2; }
-.container.right-panel-active .sign-in-container { transform: translateX(100%); }
-
 .sign-up-container { left: 0; width: 50%; opacity: 0; z-index: 1; }
-.container.right-panel-active .sign-up-container {
-  transform: translateX(100%);
-  opacity: 1;
-  z-index: 5;
-  animation: show 0.6s;
-}
+.container.right-panel-active .sign-in-container { transform: translateX(100%); }
+.container.right-panel-active .sign-up-container { transform: translateX(100%); opacity: 1; z-index: 5; animation: show 0.6s; }
+@keyframes show { 0%, 49.99% { opacity: 0; z-index: 1; } 50%, 100% { opacity: 1; z-index: 5; } }
 
-@keyframes show {
-  0%, 49.99% { opacity: 0; z-index: 1; }
-  50%, 100% { opacity: 1; z-index: 5; }
-}
-
-/* OVERLAY */
-.overlay-container {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 50%;
-  height: 100%;
-  overflow: hidden;
-  transition: transform 0.6s ease-in-out;
-  z-index: 100;
-}
+.overlay-container { position: absolute; top: 0; left: 50%; width: 50%; height: 100%; overflow: hidden; transition: transform 0.6s ease-in-out; z-index: 100; }
 .container.right-panel-active .overlay-container { transform: translateX(-100%); }
-
-.overlay {
-  background: #000;
-  color: #fff;
-  position: relative;
-  left: -100%;
-  height: 100%;
-  width: 200%;
-  transform: translateX(0);
-  transition: transform 0.6s ease-in-out;
-}
+.overlay { background: #000; color: #fff; position: relative; left: -100%; height: 100%; width: 200%; transform: translateX(0); transition: transform 0.6s ease-in-out; }
 .container.right-panel-active .overlay { transform: translateX(50%); }
-
-.overlay-panel {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  padding: 0 10%;
-  text-align: center;
-  top: 0;
-  height: 100%;
-  width: 50%;
-  transition: transform 0.6s ease-in-out;
-}
-
+.overlay-panel { position: absolute; display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 0 10%; text-align: center; top: 0; height: 100%; width: 50%; transition: transform 0.6s ease-in-out; }
 .overlay-left { transform: translateX(-20%); }
 .container.right-panel-active .overlay-left { transform: translateX(0); }
 .overlay-right { right: 0; }
 .container.right-panel-active .overlay-right { transform: translateX(20%); }
 
-/* DASHBOARD & RESET CARDS */
-/* Note: On full screen, these appear as full-page cards */
-.card {
-  background: white;
-  padding: 60px;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
+/* NAVBAR & DROPDOWN */
+.navbar { position: absolute; top: 0; width: 100%; height: 70px; background: #fff; display: flex; justify-content: space-between; align-items: center; padding: 0 40px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 1000; }
+.profile-container { position: relative; }
+.profile-trigger { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+.profile-trigger img { width: 35px; height: 35px; border-radius: 50%; border: 1px solid #ddd; }
+.dropdown-menu { position: absolute; top: 60px; right: 0; background: #fff; width: 220px; border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); display: none; flex-direction: column; padding: 10px 0; z-index: 1100; }
+.dropdown-menu.show { display: flex; }
+.dropdown-menu a { padding: 12px 20px; text-decoration: none; color: #333; font-size: 14px; display: flex; align-items: center; gap: 10px; }
+.dropdown-menu a:hover { background: #f6f5f7; }
+.logout-link { color: #ff4b2b !important; }
 
-.social-container { margin: 20px 0; }
-.social-container a {
-  border: 1px solid #ddd;
-  border-radius: 50%;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0 10px;
-  height: 45px;
-  width: 45px;
-  color: #333;
-  text-decoration: none;
-}
-
-/* MOBILE RESPONSIVENESS */
-@media (max-width: 768px) {
-  .overlay-container {
-    display: none; /* Hide the complex sliding part on phones */
-  }
-  .form-container {
-    width: 100% !important;
-  }
-  .container.right-panel-active .sign-up-container {
-    transform: translateX(0);
-  }
-  .container.right-panel-active .sign-in-container {
-    display: none;
-  }
-}
+/* DASHBOARD CONTENT */
+.dashboard-content { width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #f0f2f5; }
+.info-card { display: none; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: left; }
+.simple-card { background: #fff; padding: 40px; border-radius: 10px; text-align: center; width: 400px; }
