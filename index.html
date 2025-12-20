@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Auth Dashboard</title>
+    <title>TechWorld Auth & Dashboard</title>
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,800" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -19,7 +19,7 @@
                         <a href="#" onclick="loginWithGoogle()"><i class="fab fa-google"></i></a>
                     </div>
                     <span>or use your email for registration</span>
-                    <input type="text" placeholder="Name" required />
+                    <input type="text" id="upName" placeholder="Name" required />
                     <input type="email" id="upEmail" placeholder="Email" required />
                     <input type="password" id="upPassword" placeholder="Password" required />
                     <button type="submit">Sign Up</button>
@@ -68,35 +68,38 @@
     <div id="dashboard-view" class="view-section">
         <nav class="navbar">
             <div class="logo">TECHWORLD</div>
-            <div class="profile-container">
-                <div class="profile-trigger" onclick="toggleDropdown()">
-                    <span id="user-display-name">User</span>
-                    <img src="https://via.placeholder.com/40" alt="Profile" id="profile-img">
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-                <div id="profile-dropdown" class="dropdown-menu">
-                    <div class="dropdown-header">
-                        <p id="user-email-header">email@example.com</p>
-                    </div>
-                    <hr>
-                    <a href="#" onclick="showInfo()"><i class="fas fa-user"></i> Personal Info</a>
-                    <a href="#" onclick="switchView('reset-view')"><i class="fas fa-key"></i> Change Password</a>
-                    <a href="#" onclick="logout()" class="logout-link"><i class="fas fa-sign-out-alt"></i> Log Out</a>
-                </div>
+            <div class="menu-icon" onclick="toggleSettings()">
+                <i class="fas fa-bars"></i>
             </div>
         </nav>
 
         <div class="dashboard-content">
-            <div id="welcome-msg">
-                <h1>Welcome to your Dashboard</h1>
-                <p>Use the top-right menu to manage your account.</p>
+            <div class="welcome-box">
+                <h1>Welcome, <span id="display-name-label">User</span>!</h1>
+                <p>You are now logged into your secure dashboard.</p>
             </div>
-            
-            <div id="info-card" class="info-card">
-                <h3>Profile Details</h3>
-                <p><strong>Email:</strong> <span id="info-email"></span></p>
-                <p><strong>User ID:</strong> <span id="info-uid"></span></p>
-                <button onclick="closeInfo()">Close</button>
+        </div>
+
+        <div id="settings-panel" class="settings-panel">
+            <div class="settings-header">
+                <h3>Account Settings</h3>
+                <i class="fas fa-times close-icon" onclick="toggleSettings()"></i>
+            </div>
+            <div class="settings-body">
+                <div class="setting-item">
+                    <label>Display Name</label>
+                    <input type="text" id="newNameInput" placeholder="New Name">
+                    <button onclick="updateName()">Update Name</button>
+                </div>
+                <hr>
+                <div class="setting-item">
+                    <label>Security</label>
+                    <button class="secondary-btn" onclick="switchView('reset-view'); toggleSettings();">Change Password</button>
+                </div>
+                <hr>
+                <div class="setting-item">
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
             </div>
         </div>
     </div>
