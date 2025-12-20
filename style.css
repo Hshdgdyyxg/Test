@@ -85,10 +85,27 @@ hr { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
     transform: translateX(50%);
 }
 
-/* Target the link in all states: normal, visited, hover, and active */
-.social-container a.google-btn, 
-.social-container a.google-btn:visited {
-    color: #000000 !important; /* Force it to stay black */
-    border: 1px solid #000000;
+/* 1. Remove the 'visited' purple and force black */
+.social-container a, 
+.social-container a:visited {
+    color: #000000 !important;
     text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* 2. Styling the "box" (The Border) */
+    border: 1px solid #333; /* Darker border */
+    border-radius: 50%;     /* Makes the border a perfect circle */
+    margin: 0 5px;
+    height: 40px;
+    width: 40px;
+    transition: all 0.3s ease;
+}
+
+/* 3. Hover effect - keeps it from looking "inverted" weirdly */
+.social-container a:hover {
+    background-color: #f0f0f0; /* Light grey background on hover */
+    color: #000000 !important;
+    border-color: #000;
 }
