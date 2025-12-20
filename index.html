@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechWorld Auth & Dashboard</title>
+    <title>TechWorld Fullscreen Dashboard</title>
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,800" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -12,52 +12,51 @@
 
     <div id="auth-view" class="view-section active">
         <div class="container" id="main-container">
-           <div class="form-container sign-up-container">
-    <form id="signUpForm">
-        <h1>Create Account</h1>
-        <div class="social-container">
-    <a href="#" class="google-btn" onclick="loginWithGoogle()">
-        <i class="fab fa-google"></i>
-    </a>
-</div>
-        <span>or use your email for registration</span>
-        <input type="text" id="upName" placeholder="Name" required />
-        <input type="email" id="upEmail" placeholder="Email" required />
-        <input type="password" id="upPassword" placeholder="Password" required />
-        <button type="submit">Sign Up</button>
-    </form>
-</div>
+            <div class="form-container sign-up-container">
+                <form id="signUpForm">
+                    <h1>Create Account</h1>
+                    <div class="social-container">
+                        <a href="#" onclick="loginWithGoogle()"><i class="fab fa-google"></i></a>
+                    </div>
+                    <span>or use your email for registration</span>
+                    <input type="text" id="upName" placeholder="Name" required />
+                    <input type="email" id="upEmail" placeholder="Email" required />
+                    <input type="password" id="upPassword" placeholder="Password" required />
+                    <button type="submit">Sign Up</button>
+                </form>
+            </div>
 
-<div class="form-container sign-in-container">
-    <form id="signInForm">
-        <h1>Sign in</h1>
-        <div class="social-container">
-    <a href="#" class="google-btn" onclick="loginWithGoogle()">
-        <i class="fab fa-google"></i>
-    </a>
-</div>
-        <span>or use your account</span>
-        <input type="email" id="inEmail" placeholder="Email" required />
-        <input type="password" id="inPassword" placeholder="Password" required />
-        <a href="#" onclick="switchView('reset-view')">Forgot your password?</a>
-        <button type="submit">Sign In</button>
-    </form>
-</div>
+            <div class="form-container sign-in-container">
+                <form id="signInForm">
+                    <h1>Sign in</h1>
+                    <div class="social-container">
+                        <a href="#" onclick="loginWithGoogle()"><i class="fab fa-google"></i></a>
+                    </div>
+                    <span>or use your account</span>
+                    <input type="email" id="inEmail" placeholder="Email" required />
+                    <input type="password" id="inPassword" placeholder="Password" required />
+                    <a href="#" onclick="switchView('reset-view')">Forgot your password?</a>
+                    <button type="submit">Sign In</button>
+                </form>
+            </div>
 
-<div class="overlay-container">
-    <div class="overlay">
-        <div class="overlay-panel overlay-left">
-            <h1>Welcome Back!</h1>
-            <p>To keep connected with us please login with your personal info</p>
-            <button class="ghost" id="signInToggle">Sign In</button>
-        </div>
-        <div class="overlay-panel overlay-right">
-            <h1>Hello, Friend!</h1>
-            <p>Enter your personal details and start journey with us</p>
-            <button class="ghost" id="signUpToggle">Sign Up</button>
+            <div class="overlay-container">
+                <div class="overlay">
+                    <div class="overlay-panel overlay-left">
+                        <h1>Welcome Back!</h1>
+                        <p>To keep connected with us please login with your personal info</p>
+                        <button class="ghost" id="signInToggle">Sign In</button>
+                    </div>
+                    <div class="overlay-panel overlay-right">
+                        <h1>Hello, Friend!</h1>
+                        <p>Enter your personal details and start journey with us</p>
+                        <button class="ghost" id="signUpToggle">Sign Up</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+
     <div id="reset-view" class="view-section">
         <div class="simple-card">
             <h1>Reset Password</h1>
@@ -77,7 +76,6 @@
                 <i class="fas fa-bars"></i>
             </div>
         </nav>
-
         <div class="dashboard-content">
             <div class="welcome-box">
                 <h1>Welcome, <span id="display-name-label">User</span>!</h1>
@@ -98,11 +96,6 @@
                 </div>
                 <hr>
                 <div class="setting-item">
-                    <label>Security</label>
-                    <button class="secondary-btn" onclick="switchView('reset-view'); toggleSettings();">Change Password</button>
-                </div>
-                <hr>
-                <div class="setting-item">
                     <button class="logout-btn" onclick="logout()">Logout</button>
                 </div>
             </div>
@@ -114,7 +107,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
-
-
-
