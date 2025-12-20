@@ -76,7 +76,20 @@ document.getElementById('signUpForm').addEventListener('submit', (e) => {
 // GOOGLE
 function loginWithGoogle() {
     const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider).then(res => syncUserToFirestore(res.user)).catch(err => alert(err.message));
+    
+    // THIS LINE FORCES THE ACCOUNT SELECTION SCREEN
+    provider.setCustomParameters({
+        prompt: 'select_account'
+    });
+
+    auth.signInWithPopup(provider)
+        .then((result) => {
+            syncUserToFirestore(result.user);
+        })
+        .catch((error) => {
+            console.error("Error:", error.code, error.message);
+            alert(error.message);
+        });
 }
 
 // RESET PASSWORD
