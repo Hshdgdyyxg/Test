@@ -79,18 +79,31 @@ button.ghost { background: transparent; border-color: #fff; }
   margin: 20px 0;
 }
 
+/* Target the social link and the icon inside it */
 .social-container a, 
-.social-container a:visited {
-  background: none !important;      /* Removed background */
-  border: none !important;          /* Removed border */
-  color: #000000 !important;        /* Solid black icon */
-  font-size: 28px;                  /* Icon size */
-  text-decoration: none;
-  margin: 0 15px;
-  display: inline-flex;
-  transition: transform 0.2s ease;
+.social-container a:visited, 
+.social-container a:hover, 
+.social-container a:active, 
+.social-container a:focus {
+    background: none !important;      /* Removes any background */
+    border: none !important;          /* Removes that box/border in your image */
+    outline: none !important;         /* Removes the blue/black focus box */
+    color: #000000 !important;        /* Keeps the 'G' solid black always */
+    text-decoration: none !important; /* Removes underlines */
+    display: inline-flex;
+    padding: 0;
+    margin: 0 15px;
+    box-shadow: none !important;      /* Ensures no shadow appears on click */
 }
 
+/* Optional: Only a slight size change when clicking so you know it worked */
+.social-container a:active {
+    transform: scale(0.9);            /* Briefly shrinks instead of inverting color */
+}
+
+.social-container i {
+    font-size: 28px;                  /* Size of the actual Google logo */
+}
 .social-container a:hover {
   transform: scale(1.15);
   color: #444 !important;
