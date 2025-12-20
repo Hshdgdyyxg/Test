@@ -1,4 +1,4 @@
-// 1. FIREBASE CONFIG
+// 1. INITIALIZE FIREBASE
 const firebaseConfig = {
     apiKey: "AIzaSyD0efUT_IFoPQ3svHnu89j7kyWE6OYnWtE",
     authDomain: "the-tech-world-e2b7c.firebaseapp.com",
@@ -9,6 +9,7 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
+const db = firebase.firestore();
 
 // 2. DOM ELEMENTS
 const mainContainer = document.getElementById('main-container');
@@ -16,16 +17,10 @@ const signUpToggle = document.getElementById('signUpToggle');
 const signInToggle = document.getElementById('signInToggle');
 const settingsPanel = document.getElementById('settings-panel');
 
-// 3. ANIMATION TRIGGER
-// This handles the sliding effect between Login and Sign Up
-signUpToggle.addEventListener('click', () => {
-    mainContainer.classList.add("right-panel-active");
-});
-signInToggle.addEventListener('click', () => {
-    mainContainer.classList.remove("right-panel-active");
-});
+// 3. UI ANIMATIONS
+signUpToggle.addEventListener('click', () => mainContainer.classList.add("right-panel-active"));
+signInToggle.addEventListener('click', () => mainContainer.classList.remove("right-panel-active"));
 
-// 4. VIEW & PANEL CONTROLS
 function switchView(viewId) {
     document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
     document.getElementById(viewId).classList.add('active');
@@ -35,99 +30,75 @@ function toggleSettings() {
     settingsPanel.classList.toggle('active');
 }
 
-// 5. AUTH LOGIC & OBSERVER
+// 4. DATABASE SYNC
+function syncUserToFirestore(user) {
+    return db.collection("users").doc(user.uid).set({
+        name: user.displayName || "New User",
+        email: user.email,
+        photo: user.photoURL || "",
+        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+}
+
+// 5. AUTH LOGIC
 auth.onAuthStateChanged(user => {
     if (user) {
-        // User is signed in, show dashboard
         document.getElementById('display-name-label').innerText = user.displayName || "User";
+        document.getElementById('user-email-display').innerText = user.email;
         switchView('dashboard-view');
     } else {
-        // User is signed out, show auth screen (unless on reset screen)
         if (!document.getElementById('reset-view').classList.contains('active')) {
             switchView('auth-view');
         }
     }
 });
 
-// SIGN IN
+// LOGIN
 document.getElementById('signInForm').addEventListener('submit', (e) => {
     e.preventDefault();
-    const email = document.getElementById('inEmail').value;
-    const pass = document.getElementById('inPassword').value;
-    auth.signInWithEmailAndPassword(email, pass).catch(err => alert(err.message));
+    auth.signInWithEmailAndPassword(document.getElementById('inEmail').value, document.getElementById('inPassword').value)
+        .catch(err => alert(err.message));
 });
 
 // SIGN UP
 document.getElementById('signUpForm').addEventListener('submit', (e) => {
     e.preventDefault();
     const name = document.getElementById('upName').value;
-    const email = document.getElementById('upEmail').value;
-    const pass = document.getElementById('upPassword').value;
-
-    auth.createUserWithEmailAndPassword(email, pass)
+    auth.createUserWithEmailAndPassword(document.getElementById('upEmail').value, document.getElementById('upPassword').value)
         .then((res) => {
-            return res.user.updateProfile({ displayName: name });
+            return res.user.updateProfile({ displayName: name }).then(() => {
+                syncUserToFirestore(res.user);
+            });
         })
         .catch(err => alert(err.message));
 });
 
-// GOOGLE LOGIN
+// GOOGLE
 function loginWithGoogle() {
     const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider).catch(err => alert(err.message));
+    auth.signInWithPopup(provider).then(res => syncUserToFirestore(res.user)).catch(err => alert(err.message));
 }
 
-// UPDATE PROFILE NAME
+// RESET PASSWORD
+document.getElementById('resetForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    auth.sendPasswordResetEmail(document.getElementById('resetEmail').value)
+        .then(() => { alert("Check email!"); switchView('auth-view'); })
+        .catch(err => alert(err.message));
+});
+
+// UPDATE NAME
 function updateName() {
     const newName = document.getElementById('newNameInput').value;
-    const user = auth.currentUser;
-
-    if (user && newName.trim() !== "") {
-        user.updateProfile({ displayName: newName })
-            .then(() => {
-                alert("Name updated successfully!");
-                document.getElementById('display-name-label').innerText = newName;
-                document.getElementById('newNameInput').value = ""; // Clear input
-                toggleSettings(); // Close panel
-            })
-            .catch((error) => alert(error.message));
-    } else {
-        alert("Please enter a valid name.");
+    if (newName) {
+        auth.currentUser.updateProfile({ displayName: newName }).then(() => {
+            syncUserToFirestore(auth.currentUser);
+            document.getElementById('display-name-label').innerText = newName;
+            alert("Name Updated!");
+            toggleSettings();
+        });
     }
 }
 
 // LOGOUT
-function logout() {
-    auth.signOut().then(() => {
-        settingsPanel.classList.remove('active');
-    });
-}
-
-// Initialize Firestore
-const db = firebase.firestore();
-
-function loginWithGoogle() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    
-    auth.signInWithPopup(provider)
-        .then((result) => {
-            const user = result.user;
-
-            // SAVE DATA TO FIRESTORE
-            // This creates a document in a collection called 'users' using the User's ID
-            db.collection("users").doc(user.uid).set({
-                name: user.displayName,
-                email: user.email,
-                photo: user.photoURL,
-                lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-            }, { merge: true }) // 'merge: true' updates the data without deleting old fields
-            .then(() => {
-                console.log("User data saved to Firestore!");
-            })
-            .catch((error) => {
-                console.error("Error writing to Firestore:", error);
-            });
-
-        })
-        .catch((error) => alert(error.message));
-}
+function logout() { auth.signOut(); settingsPanel.classList.remove('active'); }
