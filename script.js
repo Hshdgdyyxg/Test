@@ -127,4 +127,21 @@ auth.onAuthStateChanged(user => {
         }
     }
 });
+function sendMessage() {
+    const text = messageInput.value.trim();
+    if (!text) return;
+
+    const chatId = auth.currentUser.uid;
+
+    db.collection("messages")
+      .doc(chatId)
+      .collection("msgs")
+      .add({
+          text: text,
+          sender: "admin",
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+    messageInput.value = "";
+}
 
