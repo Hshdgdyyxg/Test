@@ -77,3 +77,42 @@ function updateName() {
 }
 
 function logout() { auth.signOut(); settingsPanel.classList.remove('active'); }
+
+
+// Toggle Settings Panel
+function toggleSettings() {
+    document.getElementById('settings-panel').classList.toggle('active');
+}
+
+// Update User Display Name
+function updateName() {
+    const newName = document.getElementById('newName').value;
+    const user = auth.currentUser;
+
+    if (user && newName !== "") {
+        user.updateProfile({
+            displayName: newName
+        }).then(() => {
+            alert("Name updated successfully!");
+            document.getElementById('display-name-label').innerText = newName;
+            document.getElementById('newName').value = ""; // Clear input
+            toggleSettings(); // Close panel
+        }).catch((error) => {
+            alert(error.message);
+        });
+    } else {
+        alert("Please enter a valid name.");
+    }
+}
+
+// Update Auth Observer to show name
+auth.onAuthStateChanged(user => {
+    if (user) {
+        document.getElementById('display-name-label').innerText = user.displayName || "User";
+        switchView('dashboard-view');
+    } else {
+        if (!document.getElementById('reset-view').classList.contains('active')) {
+            switchView('auth-view');
+        }
+    }
+});
