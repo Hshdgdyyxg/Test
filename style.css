@@ -84,3 +84,17 @@ hr { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
 .container.right-panel-active .overlay {
     transform: translateX(50%);
 }
+
+/* Target the link in all states: normal, visited, hover, and active */
+.social-container a.google-btn, 
+.social-container a.google-btn:visited {
+    color: #000000 !important; /* Force it to stay black */
+    border: 1px solid #000000;
+    text-decoration: none;
+}
+
+/* Optional: Make it look slightly gray or invert when you hover over it */
+.social-container a.google-btn:hover {
+    background-color: #000000;
+    color: #ffffff !important;
+}
