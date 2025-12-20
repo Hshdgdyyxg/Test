@@ -17,6 +17,7 @@ const signInToggle = document.getElementById('signInToggle');
 const settingsPanel = document.getElementById('settings-panel');
 
 // 3. ANIMATION TRIGGER
+// This handles the sliding effect between Login and Sign Up
 signUpToggle.addEventListener('click', () => {
     mainContainer.classList.add("right-panel-active");
 });
@@ -34,85 +35,70 @@ function toggleSettings() {
     settingsPanel.classList.toggle('active');
 }
 
-// 5. AUTH LOGIC
+// 5. AUTH LOGIC & OBSERVER
 auth.onAuthStateChanged(user => {
     if (user) {
+        // User is signed in, show dashboard
         document.getElementById('display-name-label').innerText = user.displayName || "User";
         switchView('dashboard-view');
     } else {
+        // User is signed out, show auth screen (unless on reset screen)
         if (!document.getElementById('reset-view').classList.contains('active')) {
             switchView('auth-view');
         }
     }
 });
 
+// SIGN IN
 document.getElementById('signInForm').addEventListener('submit', (e) => {
     e.preventDefault();
-    auth.signInWithEmailAndPassword(document.getElementById('inEmail').value, document.getElementById('inPassword').value)
-        .catch(err => alert(err.message));
+    const email = document.getElementById('inEmail').value;
+    const pass = document.getElementById('inPassword').value;
+    auth.signInWithEmailAndPassword(email, pass).catch(err => alert(err.message));
 });
 
+// SIGN UP
 document.getElementById('signUpForm').addEventListener('submit', (e) => {
     e.preventDefault();
     const name = document.getElementById('upName').value;
-    auth.createUserWithEmailAndPassword(document.getElementById('upEmail').value, document.getElementById('upPassword').value)
-        .then((res) => res.user.updateProfile({ displayName: name }))
+    const email = document.getElementById('upEmail').value;
+    const pass = document.getElementById('upPassword').value;
+
+    auth.createUserWithEmailAndPassword(email, pass)
+        .then((res) => {
+            return res.user.updateProfile({ displayName: name });
+        })
         .catch(err => alert(err.message));
 });
 
+// GOOGLE LOGIN
 function loginWithGoogle() {
     const provider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithPopup(provider).catch(err => alert(err.message));
 }
 
+// UPDATE PROFILE NAME
 function updateName() {
-    const name = document.getElementById('newNameInput').value;
-    if (name) {
-        auth.currentUser.updateProfile({ displayName: name }).then(() => {
-            alert("Updated!");
-            document.getElementById('display-name-label').innerText = name;
-            toggleSettings();
-        });
-    }
-}
-
-function logout() { auth.signOut(); settingsPanel.classList.remove('active'); }
-
-
-// Toggle Settings Panel
-function toggleSettings() {
-    document.getElementById('settings-panel').classList.toggle('active');
-}
-
-// Update User Display Name
-function updateName() {
-    const newName = document.getElementById('newName').value;
+    const newName = document.getElementById('newNameInput').value;
     const user = auth.currentUser;
 
-    if (user && newName !== "") {
-        user.updateProfile({
-            displayName: newName
-        }).then(() => {
-            alert("Name updated successfully!");
-            document.getElementById('display-name-label').innerText = newName;
-            document.getElementById('newName').value = ""; // Clear input
-            toggleSettings(); // Close panel
-        }).catch((error) => {
-            alert(error.message);
-        });
+    if (user && newName.trim() !== "") {
+        user.updateProfile({ displayName: newName })
+            .then(() => {
+                alert("Name updated successfully!");
+                document.getElementById('display-name-label').innerText = newName;
+                document.getElementById('newNameInput').value = ""; // Clear input
+                toggleSettings(); // Close panel
+            })
+            .catch((error) => alert(error.message));
     } else {
         alert("Please enter a valid name.");
     }
 }
 
-// Update Auth Observer to show name
-auth.onAuthStateChanged(user => {
-    if (user) {
-        document.getElementById('display-name-label').innerText = user.displayName || "User";
-        switchView('dashboard-view');
-    } else {
-        if (!document.getElementById('reset-view').classList.contains('active')) {
-            switchView('auth-view');
-        }
-    }
-});
+// LOGOUT
+function logout() {
+    auth.signOut().then(() => {
+        settingsPanel.classList.remove('active');
+    });
+}
