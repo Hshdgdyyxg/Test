@@ -115,3 +115,16 @@ function updateName() {
 
 // LOGOUT
 function logout() { auth.signOut(); settingsPanel.classList.remove('active'); }
+const ADMIN_EMAIL = "admin@techworld.com";
+
+auth.onAuthStateChanged(user => {
+    if (user) {
+        switchView('dashboard-view');
+        startChatListener();
+
+        if (user.email !== ADMIN_EMAIL) {
+            document.getElementById("chatInputBox").style.display = "none";
+        }
+    }
+});
+
