@@ -9,7 +9,6 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-const db = firebase.firestore();
 
 // 2. DOM ELEMENTS
 const mainContainer = document.getElementById('main-container');
@@ -17,114 +16,97 @@ const signUpToggle = document.getElementById('signUpToggle');
 const signInToggle = document.getElementById('signInToggle');
 const settingsPanel = document.getElementById('settings-panel');
 
-// 3. UI ANIMATIONS
-signUpToggle.addEventListener('click', () => mainContainer.classList.add("right-panel-active"));
-signInToggle.addEventListener('click', () => mainContainer.classList.remove("right-panel-active"));
+// 3. ANIMATION LOGIC (The Sliding Fix)
+if (signUpToggle && signInToggle && mainContainer) {
+    signUpToggle.addEventListener('click', () => {
+        mainContainer.classList.add("right-panel-active");
+    });
 
+    signInToggle.addEventListener('click', () => {
+        mainContainer.classList.remove("right-panel-active");
+    });
+}
+
+// 4. VIEW CONTROL
 function switchView(viewId) {
     document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
-    document.getElementById(viewId).classList.add('active');
+    const targetView = document.getElementById(viewId);
+    if (targetView) targetView.classList.add('active');
 }
 
 function toggleSettings() {
     settingsPanel.classList.toggle('active');
 }
 
-// 4. DATABASE SYNC
-function syncUserToFirestore(user) {
-    return db.collection("users").doc(user.uid).set({
-        name: user.displayName || "New User",
-        email: user.email,
-        photo: user.photoURL || "",
-        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-    }, { merge: true });
-}
-
-// 5. AUTH LOGIC
+// 5. AUTH OBSERVER
 auth.onAuthStateChanged(user => {
     if (user) {
         document.getElementById('display-name-label').innerText = user.displayName || "User";
         document.getElementById('user-email-display').innerText = user.email;
         switchView('dashboard-view');
     } else {
+        // Only show auth view if not currently on reset view
         if (!document.getElementById('reset-view').classList.contains('active')) {
             switchView('auth-view');
         }
     }
 });
 
-// LOGIN
+// 6. LOGIN & SIGNUP
 document.getElementById('signInForm').addEventListener('submit', (e) => {
     e.preventDefault();
-    auth.signInWithEmailAndPassword(document.getElementById('inEmail').value, document.getElementById('inPassword').value)
-        .catch(err => alert(err.message));
+    const email = document.getElementById('inEmail').value;
+    const pass = document.getElementById('inPassword').value;
+    auth.signInWithEmailAndPassword(email, pass).catch(err => alert(err.message));
 });
 
-// SIGN UP
 document.getElementById('signUpForm').addEventListener('submit', (e) => {
     e.preventDefault();
     const name = document.getElementById('upName').value;
-    auth.createUserWithEmailAndPassword(document.getElementById('upEmail').value, document.getElementById('upPassword').value)
+    const email = document.getElementById('upEmail').value;
+    const pass = document.getElementById('upPassword').value;
+
+    auth.createUserWithEmailAndPassword(email, pass)
         .then((res) => {
-            return res.user.updateProfile({ displayName: name }).then(() => {
-                syncUserToFirestore(res.user);
-            });
+            return res.user.updateProfile({ displayName: name });
         })
         .catch(err => alert(err.message));
 });
 
-// GOOGLE
+// 7. GOOGLE LOGIN
 function loginWithGoogle() {
     const provider = new firebase.auth.GoogleAuthProvider();
-    
-    // THIS LINE FORCES THE ACCOUNT SELECTION SCREEN
-    provider.setCustomParameters({
-        prompt: 'select_account'
-    });
-
-    auth.signInWithPopup(provider)
-        .then((result) => {
-            syncUserToFirestore(result.user);
-        })
-        .catch((error) => {
-            console.error("Error:", error.code, error.message);
-            alert(error.message);
-        });
+    provider.setCustomParameters({ prompt: 'select_account' });
+    auth.signInWithPopup(provider).catch((error) => alert(error.message));
 }
 
-// RESET PASSWORD
+// 8. RESET PASSWORD
 document.getElementById('resetForm').addEventListener('submit', (e) => {
     e.preventDefault();
-    auth.sendPasswordResetEmail(document.getElementById('resetEmail').value)
-        .then(() => { alert("Check email!"); switchView('auth-view'); })
+    const email = document.getElementById('resetEmail').value;
+    auth.sendPasswordResetEmail(email)
+        .then(() => { 
+            alert("Success! Check your email for the reset link."); 
+            switchView('auth-view'); 
+        })
         .catch(err => alert(err.message));
 });
 
-// UPDATE NAME
+// 9. UPDATE NAME
 function updateName() {
     const newName = document.getElementById('newNameInput').value;
-    if (newName) {
+    if (newName && auth.currentUser) {
         auth.currentUser.updateProfile({ displayName: newName }).then(() => {
-            syncUserToFirestore(auth.currentUser);
             document.getElementById('display-name-label').innerText = newName;
-            alert("Name Updated!");
+            alert("Profile Updated!");
             toggleSettings();
         });
     }
 }
 
-// LOGOUT
-function logout() { auth.signOut(); settingsPanel.classList.remove('active'); }
-const ADMIN_EMAIL = "admin@techworld.com";
-
-auth.onAuthStateChanged(user => {
-    if (user) {
-        switchView('dashboard-view');
-        startChatListener();
-
-        if (user.email !== ADMIN_EMAIL) {
-            document.getElementById("chatInputBox").style.display = "none";
-        }
-    }
-});
-
+// 10. LOGOUT
+function logout() { 
+    auth.signOut().then(() => {
+        settingsPanel.classList.remove('active');
+    });
+}
