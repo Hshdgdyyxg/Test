@@ -125,3 +125,15 @@ function logout() {
     const panel = document.getElementById('settings-panel');
     if (panel) panel.classList.remove('active'); 
 }
+
+
+function syncUserToFirestore(user) {
+    if (!user) return;
+    return db.collection("users").doc(user.uid).set({
+        name: user.displayName || "New User",
+        email: user.email,
+        phone: user.phoneNumber || "Not provided", // Firebase tries to get this from the provider
+        photo: user.photoURL || "",
+        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+}
