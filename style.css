@@ -17,9 +17,9 @@ button:active { transform: scale(0.95); }
 /* SOLID BLACK GOOGLE LOGO (NO BOX/NO INVERT) */
 .social-container { margin: 20px 0; }
 .social-container a, .social-container a:visited, .social-container a:active, .social-container a:focus {
-    background: none !important; border: none !important; outline: none !important;
-    color: #000 !important; text-decoration: none !important; display: inline-flex;
-    margin: 0 15px; box-shadow: none !important; font-size: 30px; transition: 0.2s;
+    background: none !important; border: none !important; outline: none !important;
+    color: #000 !important; text-decoration: none !important; display: inline-flex;
+    margin: 0 15px; box-shadow: none !important; font-size: 30px; transition: 0.2s;
 }
 .social-container a:hover { transform: scale(1.1); }
 
