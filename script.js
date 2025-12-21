@@ -30,10 +30,9 @@ function syncUserToFirestore(user) {
     return db.collection("users").doc(user.uid).set({
         name: user.displayName || "New User",
         email: user.email,
-        phone: user.phoneNumber || "Not provided", // Firebase tries to get this from the provider
         photo: user.photoURL || "",
         lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-    }, { merge: true });
+    }, { merge: true }).catch(err => console.error("Firestore Error:", err));
 }
 
 // 4. AUTH LOGIC (Single Listener)
@@ -127,3 +126,14 @@ function logout() {
     if (panel) panel.classList.remove('active'); 
 }
 
+
+function syncUserToFirestore(user) {
+    if (!user) return;
+    return db.collection("users").doc(user.uid).set({
+        name: user.displayName || "New User",
+        email: user.email,
+        phone: user.phoneNumber || "Not provided", // Firebase tries to get this from the provider
+        photo: user.photoURL || "",
+        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+}
