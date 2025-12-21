@@ -12,6 +12,7 @@
 
     <div id="auth-view" class="view-section active">
         <div class="container" id="main-container">
+            
             <div class="form-container sign-up-container">
                 <form id="signUpForm">
                     <h1>Create Account</h1>
@@ -35,7 +36,7 @@
                     <span>or use your account</span>
                     <input type="email" id="inEmail" placeholder="Email" required />
                     <input type="password" id="inPassword" placeholder="Password" required />
-                    <a href="#" onclick="switchView('reset-view')">Forgot your password?</a>
+                    <a href="javascript:void(0)" onclick="switchView('reset-view')">Forgot your password?</a>
                     <button type="submit">Sign In</button>
                 </form>
             </div>
@@ -60,12 +61,13 @@
     <div id="reset-view" class="view-section">
         <div class="simple-card">
             <h1>Reset Password</h1>
+            <p>We will send a link to your email</p>
             <form id="resetForm">
                 <input type="email" id="resetEmail" placeholder="Email Address" required />
                 <button type="submit">Send Reset Link</button>
             </form>
             <br>
-            <a href="#" onclick="switchView('auth-view')">← Back to Login</a>
+            <a href="javascript:void(0)" onclick="switchView('auth-view')">← Back to Login</a>
         </div>
     </div>
 
@@ -81,20 +83,25 @@
             <div class="welcome-box">
                 <h1>Dashboard</h1>
                 <p>Welcome, <span id="display-name-label">User</span>!</p>
-                <p id="user-email-display" style="color:#666; font-size:14px;"></p>
+                <p id="user-email-display" style="color:#666; font-size:14px; margin-top: 10px;"></p>
             </div>
         </div>
 
         <div id="settings-panel" class="settings-panel">
             <div class="settings-header">
                 <h3>Account Settings</h3>
-                <i class="fas fa-times" onclick="toggleSettings()"></i>
+                <i class="fas fa-times" onclick="toggleSettings()" style="cursor: pointer;"></i>
             </div>
             <div class="settings-body">
                 <div class="setting-item">
-                    <label>Change Name</label>
+                    <label>Change Display Name</label>
                     <input type="text" id="newNameInput" placeholder="Enter new name">
-                    <button onclick="updateName()">Update Name</button>
+                    <button onclick="updateName()" style="width: 100%;">Update Name</button>
+                </div>
+                <hr>
+                <div class="setting-item">
+                    <label>Security</label>
+                    <button onclick="switchView('reset-view'); toggleSettings();" style="width: 100%; background: #444; border: none;">Change Password</button>
                 </div>
                 <hr>
                 <div class="setting-item">
@@ -106,6 +113,7 @@
 
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    
     <script src="script.js"></script>
 </body>
 </html>
